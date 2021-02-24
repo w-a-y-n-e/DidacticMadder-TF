@@ -8,13 +8,9 @@ import os
 import pathlib
 import random
 import socket
-#from redis import Redis
-#from rq import Queue
 
 from multiprocessing import Pool
 database_file = 'infrastructure.db'
-
-#q = Queue(connection=Redis())
 
 import sqlite3
 
@@ -42,17 +38,14 @@ def get_free_port():
         check_port=random.randint(1025,2048)
         if check_port not in ports_used:
             ports_used.append(check_port)
-            #print(f"check_port: {check_port}")
             return check_port
 
 def iptables_wrapper(action,nat_ip,port_to_forward=None,destination_port=None):
     if action and nat_ip:
         if port_to_forward and destination_port:
-            subprocess.run(['sudo', '/home/wayne/port_forwarding.sh', action, str(nat_ip), str(port_to_forward), str(destination_port)])
+            subprocess.run(['sudo', 'port_forwarding.sh', action, str(nat_ip), str(port_to_forward), str(destination_port)])
         if not port_to_forward and not destination_port:
-            subprocess.run(['sudo', '/home/wayne/port_forwarding.sh', action, str(nat_ip)])
-
-#iptables_wrapper('A','192.168.122.123',2222,22)
+            subprocess.run(['sudo', 'port_forwarding.sh', action, str(nat_ip)])
 
 def start_vms(username, scenario_id):
     CWD = f'/home/wayne/projects/{scenario_id}/'
@@ -141,7 +134,6 @@ def start_instance(username, scenario_id):
             cur.execute('insert into vms (username,scenario_id) values (?,?);', (username,scenario_id))
             conn.commit()
             pool.apply_async(start_vms,(username,scenario_id))
-            #q.enqueue(start_vms, username, scenario_id)
             return "Create requested", 202
         elif rows[0]==0:
             return "In progress", 202
