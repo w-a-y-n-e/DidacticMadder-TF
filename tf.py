@@ -30,7 +30,7 @@ app = Flask(__name__)
 
 ports_used = list()
 main_ip = get_ip()
-scenario_listing=[str(eachpath.name) for eachpath in pathlib.Path('/home/wayne/projects').glob("*") if eachpath.is_dir()]
+scenario_listing=[str(eachpath.name) for eachpath in pathlib.Path.cwd().glob("*") if eachpath.is_dir()]
 CWD=''
 
 def get_free_port():
@@ -48,7 +48,7 @@ def iptables_wrapper(action,nat_ip,port_to_forward=None,destination_port=None):
             subprocess.run(['sudo', './port_forwarding.sh', action, str(nat_ip)])
 
 def start_vms(username, scenario_id):
-    CWD = f'/home/wayne/projects/{scenario_id}/'
+    CWD = f'./{scenario_id}/'
     workspace_id = f"{username}_{scenario_id}"
     print(f"Starting {workspace_id}")
     subprocess.run(['/usr/bin/terraform', 'workspace', 'new', '-lock-timeout=30s', workspace_id], cwd=CWD)
@@ -87,7 +87,7 @@ def start_vms(username, scenario_id):
         print("Completed!")
 
 def stop_vms(username, scenario_id):
-    CWD = f'/home/wayne/projects/{scenario_id}/'
+    CWD = f'./{scenario_id}/'
     workspace_id = f"{username}_{scenario_id}"
     print(f"Deleting {workspace_id}")
     conn = sqlite3.connect(database_file)
