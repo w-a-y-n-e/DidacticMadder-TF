@@ -1,3 +1,8 @@
+# Update the values in CAPS below. Values that have PLACEHOLDER in the name only need to be unique in this file as they are the names used by Terraform.
+# The other values in CAPS are part of values that should already have a unique component and are mostly the names used by libvirt.
+# There can be multiple domains (i.e. Virtual Machines), just pay attention to the braces
+# This is just the beginning of what is capable. See https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/website/docs/r/
+
 terraform {
  required_version = ">= 0.13"
   required_providers {
@@ -12,53 +17,46 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-#provider "libvirt" {
-#  alias = "server2"
-#  uri   = "qemu+ssh://root@192.168.100.10/system"
-#}
-
-#variable "scenario_name" {
-#  type    = string
-#}
-
-#variable "user_name" {
-#  type    = string
-#}
 
 resource "random_uuid" "env_uuid" { }
 
-resource "libvirt_volume" "deb10-qcow2" {
-#  name = "${random_uuid.env_uuid.result}-deb10.qcow2"
-  name = "${terraform.workspace}-deb10.qcow2"
+resource "libvirt_volume" "DISK-PLACEHOLDER" {
+#  name = "${random_uuid.env_uuid.result}-MACHINE-DISK-NAME.qcow2"
+  name = "${terraform.workspace}-MACHINE-DISK-NAME.qcow2"
   pool = "default"
-  #source = "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
-  source = "packer-output/wrangler-ops.qcow2"
+  source = "PATH-TO/SOURCE-DISK.qcow2"
   format = "qcow2"
 }
 
-resource "libvirt_network" "test_net" {
-	#name      = "${random_uuid.env_uuid.result}-test_net"
-	name      = "${terraform.workspace}-test_name"
-	mode      = "none"
-}
+# Uncomment the following if you need to add a network between machines (i.e. Not the one they access directly)
+#resource "libvirt_network" "NETWORK-PLACEHOLDER" {
+#	#name      = "${random_uuid.env_uuid.result}-NETWORK-NAME"
+#	name      = "${terraform.workspace}-NETWORK-NAME"
+#	mode      = "none"
+#}
 
 # Define KVM domain to create
-resource "libvirt_domain" "deb10" {
-  name   = "${terraform.workspace}_deb10"
+resource "libvirt_domain" "MACHINE-PLACEHOLDER" {
+  name   = "${terraform.workspace}_MACHINE_NAME"
   memory = "1024"
   vcpu   = 1
 
+
+
   network_interface {
     network_name = "default"
-    wait_for_lease = true
+    wait_for_lease = true # Make sure this is only set to true for interfaces connected to the default network
+    #mac    = "52:54:00:b2:2f:86"
   }
 
   network_interface {
-    network_name = libvirt_network.test_net.name
+    network_name = libvirt_network.NETWORK-PLACEHOLDER.name
+    # Should this be id and be the PLACEHOLDER for the network?
   }
 
   disk {
-    volume_id = libvirt_volume.deb10-qcow2.id
+    volume_id = libvirt_volume.DISK-PLACEHOLDER.id
+    #scsi = "true"
   }
 
   console {
@@ -67,6 +65,7 @@ resource "libvirt_domain" "deb10" {
     target_port = "0"
   }
 
+  # Keep this block for every machine as this is what will be accessible to administrators for troubleshooting
   graphics {
     type = "vnc"
     listen_type = "address"
@@ -75,11 +74,12 @@ resource "libvirt_domain" "deb10" {
   }
 }
 
-#output "ip" {
-#  value = libvirt_domain.deb10.network_interface[0].addresses[0]
-#}
+# Use the following to define the ports/protocols that should be accessible through guacamole by the student
+# These should all be ports that are on the interface connected to the "default" network
+# This is a map with keys that identify the machine and a value that is a list containing the address, port, and protocol
+# Update the interface number to one that is connected to the "default" network
 
 output "ip" {
-   value = {(libvirt_domain.deb10.name):[libvirt_domain.deb10.network_interface[0].addresses[0],"22","ssh"]}
+   value = {(libvirt_domain.MACHINE-PLACEHOLDER.name):[libvirt_domain.MACHINE-PLACEHOLDER.network_interface[0].addresses[0],"22","ssh"]}
 }
 
