@@ -46,6 +46,7 @@ resource "libvirt_domain" "MACHINE-PLACEHOLDER" {
   network_interface {
     network_name = "default"
     wait_for_lease = true # Make sure this is only set to true for interfaces connected to the default network
+    # also make sure that this matches the configuration in the guest. If this is set to true for an interface that is not using dhcp, it will not work
     #mac    = "52:54:00:b2:2f:86"
   }
 
