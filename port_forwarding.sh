@@ -1,3 +1,4 @@
+#!/bin/bash
 if [[ $1 == 'A' ]]
 then
 	echo "$#"
@@ -14,9 +15,9 @@ then
 	then
 		echo "TRYING TO ADD LOCAL PORT"
 		#2 = to
-		firewall-cmd --add-port=$2/tcp
-		#iptables -I INPUT 1 -p tcp --dport $2 -j ACCEPT
-		#iptables -I OUTPUT 1 -p tcp --sport $2 -j ACCEPT
+		#firewall-cmd --add-port=$2/tcp
+		iptables -I INPUT 1 -p tcp --dport $2 -j ACCEPT
+		iptables -I OUTPUT 1 -p tcp --sport $2 -j ACCEPT
 	fi
 elif [[ $1 == 'D' ]]
 then
@@ -28,9 +29,9 @@ then
 		#firewall-cmd --remove-forward-port=port=$3:proto=tcp:toport=$4:toaddr=$2
 	elif [[ "$#" -eq 2 ]]
 	then
-		firewall-cmd --remove-port=$2/tcp
-		#iptables -D INPUT -p tcp --dport $2 -j ACCEPT
-		#iptables -D OUTPUT -p tcp --sport $2 -j ACCEPT
+		#firewall-cmd --remove-port=$2/tcp
+		iptables -D INPUT -p tcp --dport $2 -j ACCEPT
+		iptables -D OUTPUT -p tcp --sport $2 -j ACCEPT
 	fi
 elif [[ "$#" -ne 4 ]]
 then
