@@ -8,6 +8,7 @@
 
 - `lvresize --extents +100%FREE /dev/pve/root`
 - `resize2fs /dev/mapper/pve-root`
+- reboot
 
 - Edit `/etc/apt/sources.list.d/pve-enterprise.list`:
 -- Comment out existing line
