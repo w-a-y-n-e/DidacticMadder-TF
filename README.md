@@ -6,6 +6,9 @@
 - While installing, click options at this screen (https://pve.proxmox.com/pve-docs/images/screenshot/pve-select-target-disk.png)
 -- Set maxvz to 0
 
+- `lvresize --extents +100%FREE /dev/pve/root`
+- `resize2fs /dev/mapper/pve-root`
+
 - Edit `/etc/apt/sources.list.d/pve-enterprise.list`:
 -- Comment out existing line
 -- Add `deb http://download.proxmox.com/debian/pve buster pve-no-subscription`
