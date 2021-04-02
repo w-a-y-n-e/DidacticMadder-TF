@@ -45,9 +45,11 @@ def get_free_port():
 def iptables_wrapper(action,nat_ip,port_to_forward=None,destination_port=None):
     if action and nat_ip:
         if port_to_forward and destination_port:
-            subprocess.run(['sudo', './port_forwarding.sh', action, str(nat_ip), str(port_to_forward), str(destination_port)], cwd=script_dir)
+            #subprocess.run(['sudo', './port_forwarding.sh', action, str(nat_ip), str(port_to_forward), str(destination_port)], cwd=script_dir)
+            subprocess.run(['./port_forwarding.sh', action, str(nat_ip), str(port_to_forward), str(destination_port)], cwd=script_dir)
         if not port_to_forward and not destination_port:
-            subprocess.run(['sudo', './port_forwarding.sh', action, str(nat_ip)], cwd=script_dir)
+            #subprocess.run(['sudo', './port_forwarding.sh', action, str(nat_ip)], cwd=script_dir)
+            subprocess.run(['./port_forwarding.sh', action, str(nat_ip)], cwd=script_dir)
 
 def start_vms(username, scenario_id):
     CWD = f'./{scenario_id}/'
