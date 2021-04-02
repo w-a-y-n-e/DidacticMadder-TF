@@ -50,14 +50,14 @@ resource "libvirt_domain" "MACHINE-PLACEHOLDER" {
     #mac    = "52:54:00:b2:2f:86"
   }
 
-  network_interface {
-    network_name = libvirt_network.NETWORK-PLACEHOLDER.name
-    # Should this be id and be the PLACEHOLDER for the network?
-  }
+  #network_interface {
+  #  network_name = libvirt_network.NETWORK-PLACEHOLDER.name
+  #  # Should this be id and be the PLACEHOLDER for the network?
+  #}
 
   disk {
     volume_id = libvirt_volume.DISK-PLACEHOLDER.id
-    #scsi = "true"
+    scsi = "true" #Comment/change this if not SCSI
   }
 
   console {
